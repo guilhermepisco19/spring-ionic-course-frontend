@@ -3,70 +3,88 @@
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title>Confirm your order</ion-title>
+    <ion-title *ngIf="codrequest">Order registered!</ion-title>
+    <ion-title *ngIf="!codrequest">Confirm order</ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
 
-  <ion-card>
-    <ion-card-header>
-      Order items
-    </ion-card-header>
-
-    <ion-list>
-      <ion-item *ngFor="let item of cartItems">
-        <ion-thumbnail item-start>
-          <img [src]="item.product.imageUrl || 'assets/imgs/prod.jpg'">
-        </ion-thumbnail>
-        <h2>{{item.product.name}}</h2>
-        <p>{{item.product.price | currency}}</p>
-        <p class="nolinebreak">{{item.quantity}}</p>
-        <p item-end>{{item.product.price * item.quantity | currency}}</p>
-      </ion-item> 
-
-      <ion-item>
-        <h2>Total</h2>
-        <h2 item-end>{{total() | currency}}</h2>
-      </ion-item>
-    </ion-list> 
-  </ion-card>
-
-  <ion-card>
+  <div *ngIf="!codrequest">
+    <ion-card>
       <ion-card-header>
-        Client
+        Order items
       </ion-card-header>
+
+      <ion-list>
+        <ion-item *ngFor="let item of cartItems">
+          <ion-thumbnail item-start>
+            <img [src]="item.product.imageUrl || 'assets/imgs/prod.jpg'">
+          </ion-thumbnail>
+          <h2>{{item.product.name}}</h2>
+          <p>{{item.product.price | currency}}</p>
+          <p class="nolinebreak">{{item.quantity}}</p>
+          <p item-end>{{item.product.price * item.quantity | currency}}</p>
+        </ion-item> 
+
+        <ion-item>
+          <h2>Total</h2>
+          <h2 item-end>{{total() | currency}}</h2>
+        </ion-item>
+      </ion-list> 
+    </ion-card>
+
+    <ion-card>
+        <ion-card-header>
+          Client
+        </ion-card-header>
+        <ion-item>
+          <h2>{{client?.name}}</h2>
+          <p>{{client?.email}}</p>
+        </ion-item>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-header>
+        Delivery address
+      </ion-card-header>
+
       <ion-item>
-        <h2>{{client?.name}}</h2>
-        <p>{{client?.email}}</p>
+        <h2>{{address?.publicPlaces}}, {{address?.number}}</h2>
+        <p>{{address?.complement}} {{address?.neighborhood}} CEP {{address?.cep}}</p>
+        <p>{{address?.city.name}}, {{address?.city.state.name}}</p>
       </ion-item>
-  </ion-card>
+    </ion-card>
 
-  <ion-card>
-    <ion-card-header>
-      Delivery address
-    </ion-card-header>
+    <ion-card>
+      <ion-card-header>
+        Payment
+      </ion-card-header>
 
-    <ion-item>
-      <h2>{{address?.publicPlaces}}, {{address?.number}}</h2>
-      <p>{{address?.complement}} {{address?.neighborhood}} CEP {{address?.cep}}</p>
-      <p>{{address?.city.name}}, {{address?.city.state.name}}</p>
-    </ion-item>
-  </ion-card>
+      <ion-item *ngIf="request.payment['@type']=='paymentWithCard'">
+        <h3>Payment with card</h3>
+        <p>Parcels: {{request.payment.parcelsNumber}}</p>
+      </ion-item>
+      <ion-item *ngIf="request.payment['@type']=='paymentWithBoleto'">
+        <h3>Payment with boleto</h3>
+      </ion-item>
+    </ion-card>
+    <button ion-button block (click)="checkout()">Confirm order</button>
+    <button ion-button block outline (click)="back()">Return</button>
+  </div>
 
-  <ion-card>
-    <ion-card-header>
-      Payment
-    </ion-card-header>
+  <div *ngIf="codrequest">
+    <ion-card>
+        <ion-card-header>
+          Your request its registered!
+        </ion-card-header>
+        <ion-item>
+          <h2>Order code: {{codrequest}}</h2>
+          <p>Check your email</p>
+        </ion-item>
+    </ion-card>
 
-    <ion-item *ngIf="request.payment['@type']=='paymentWithCard'">
-      <h3>Payment with card</h3>
-      <p>Parcels: {{request.payment.parcelsNumber}}</p>
-    </ion-item>
-    <ion-item *ngIf="request.payment['@type']=='paymentWithBoleto'">
-      <h3>Payment with boleto</h3>
-    </ion-item>
-  </ion-card>
-  <button ion-button block (click)="checkout()">Confirm order</button>
-  <button ion-button block outline (click)="back()">Return</button>
+    <button ion-button block outline (click)="home()">Return</button>
+  </div>
+
 </ion-content>
