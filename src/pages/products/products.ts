@@ -21,6 +21,10 @@ export class ProductsPage {
   }
 
   ionViewDidLoad() {
+    this.loadData();
+  }
+
+  loadData() {
     let category_id = this.navParams.get("category_id");
     let loader = this.presentLoading();
     this.productService.findByCategory(category_id)
@@ -39,7 +43,7 @@ export class ProductsPage {
       let item = this.items[i];
       this.productService.getSmallImageFromBucket(item.id)
         .subscribe(response => {
-          item.imageUrl = `${API_CONFIG.bucketBaseUrl}/prod${item.id}.jpg`;
+          item.imageUrl = `${API_CONFIG.bucketBaseUrl}/prod${item.id}-small.jpg`;
         },
         error => {});
     }
@@ -55,6 +59,13 @@ export class ProductsPage {
     });
     loader.present();
     return loader;
+  }
+
+  doRefresh(refresher) {
+    this.loadData();
+    setTimeout(() => {
+      refresher.complete();
+    }, 1000);
   }
 
 }
