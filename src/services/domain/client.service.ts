@@ -4,12 +4,17 @@ import { Observable } from "rxjs/Rx";
 import { isThisTypeNode } from "typescript";
 import { API_CONFIG } from "../../config/api.config";
 import { ClientDTO } from "../../models/client.dto";
+import { ImageUtilService } from "../image-util.service";
 import { StorageService } from "../storage.service";
 
 @Injectable()
 export class ClientService {
 
-    constructor(public http : HttpClient, public storage : StorageService){
+    
+    constructor(
+        public http : HttpClient,
+        public storage : StorageService,
+        public imageUtilService: ImageUtilService){
     }
 
     findById(id: string) {
@@ -29,6 +34,21 @@ export class ClientService {
         return this.http.post(
             `${API_CONFIG.baseUrl}/clients`,
             obj,
+            {
+                observe: 'response',
+                responseType: 'text'
+            }
+        )
+    }
+
+    uploadPicture(picture) {
+        let pictureBlob = this.imageUtilService.dataUriToBlob(picture);
+        let formData : FormData = new FormData();
+        formData.set('file', pictureBlob, 'file.png');
+
+        return this.http.post(
+            `${API_CONFIG.baseUrl}/clients/picture`,
+            formData,
             {
                 observe: 'response',
                 responseType: 'text'
