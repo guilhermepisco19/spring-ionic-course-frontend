@@ -54,9 +54,11 @@
       "cordova-plugin-device": {},
       "cordova-plugin-splashscreen": {},
       "cordova-plugin-ionic-keyboard": {},
-      "cordova-plugin-camera": {},
       "cordova-plugin-ionic-webview": {},
-      "ionic-plugin-keyboard": {}
+      "ionic-plugin-keyboard": {},
+      "cordova-plugin-camera": {
+        "ANDROID_SUPPORT_V4_VERSION": "27.+"
+      }
     },
     "platforms": [
       "browser",
